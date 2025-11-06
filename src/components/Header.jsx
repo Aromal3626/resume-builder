@@ -29,7 +29,7 @@ function Header() {
             <Link to={'/'} className='text-light text-decoration-none'>R-Builder</Link>
           </Typography>
           <Tooltip title={projectInfo}>
-            <Button color="inherit">Login</Button>
+            <Button color="inherit">About Us</Button>
           </Tooltip>
           
         </Toolbar>

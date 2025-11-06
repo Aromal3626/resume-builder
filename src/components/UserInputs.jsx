@@ -7,37 +7,42 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { TextField } from '@mui/material';
 import { FaXmark } from "react-icons/fa6";
+import { addResumeAPI } from '../services/allAPI';
+import { useNavigate } from 'react-router-dom';
 
 const steps = ['Basic Information', 'Contact Details', 'Eeducational Details','Work Experience','Skills & Certification','Review & Submit'];
 
-function UserInputs() {
+function UserInputs({resumeDetails,setResumeDetails}) {
   const skillSuggestionArray = ['NODE JS','ANGULAR','REACT','MONGO DB','EXPRESS JS','LEADERSHIP','COMMUNICATION','COACHING','POWER BI','MS EXCEL']
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
 
-  //create state for storing resume details
-  const [resumeDetails,setResumeDetails] = React.useState({
-    username:'',
-    jobtitle:'',
-    location:'',
-    email:'',
-    mob:'',
-    git:'',
-    linkedin:'',
-    portfolio:'',
-    course:'',
-    college:'',
-    university:'',
-    passout:'',
-    intern:'',
-    companyname:'',
-    companylocation:'',
-    duration:'',
-    userskill:[],
-    summary:''
-  })
+  //resume details-get fromprops
+  // const [resumeDetails,setResumeDetails] = React.useState({
+  //   username:'',
+  //   jobtitle:'',
+  //   location:'',
+  //   email:'',
+  //   mob:'',
+  //   git:'',
+  //   linkedin:'',
+  //   portfolio:'',
+  //   course:'',
+  //   college:'',
+  //   university:'',
+  //   passout:'',
+  //   intern:'',
+  //   companyname:'',
+  //   companylocation:'',
+  //   duration:'',
+  //   userskill:[],
+  //   summary:''
+  // })
 
   const skillRef = React.useRef()
+
+  //to navigate
+  const navigate = useNavigate()
 
 
   console.log(resumeDetails);
@@ -170,7 +175,7 @@ function UserInputs() {
                       <Button key={index} variant='contained' className='m-1'>{skill}<FaXmark onClick={()=>removeSkill(skill)} className='ms-2'/></Button>
                     ))
                     :
-                    <p className='fw-bolder'>No skills are added yet.</p>
+                    <p className=''>No skills are added yet.</p>
                   }
                 </div>
             </div>
@@ -184,6 +189,31 @@ function UserInputs() {
             </div>
         )
         default : return null
+    }
+  }
+
+  const handleAddResume = async ()=>{
+    const {username,jobtitle,location} = resumeDetails
+    if(!username && !jobtitle && !location){
+      alert("Please fill the form completely!!!")
+    }else{
+      console.log("API call");
+      try{
+       const result = await addResumeAPI(resumeDetails)
+     
+       
+       if(result.status==201){
+        alert("Resume added successfully")
+        const {id} = result.data
+        //success redirect view page
+        navigate(`/resume/${id}/view`)
+       }
+       
+      }catch(error){
+        console.log(error);
+        
+      }
+      
     }
   }
 
@@ -211,7 +241,7 @@ function UserInputs() {
       {activeStep === steps.length ? (
         <React.Fragment>
           <Typography sx={{ mt: 2, mb: 1 }}>
-            All steps completed - you&apos;re finished
+            All steps completed 
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2 }}>
             <Box sx={{ flex: '1 1 auto' }} />
@@ -241,9 +271,11 @@ function UserInputs() {
                 Skip
               </Button>
             )}
-            <Button onClick={handleNext}>
-              {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-            </Button>
+            {
+            activeStep === steps.length - 1 ?
+            <Button onClick={handleAddResume}>Finish</Button> :
+            <Button onClick={handleNext}>Next</Button>
+            }  
           </Box>
         </React.Fragment>
       )}

@@ -3,14 +3,38 @@ import UserInputs from '../components/UserInputs'
 import Preview from '../components/Preview'
 
 function UserForm() {
+  //create state for storing resume details
+    const [resumeDetails,setResumeDetails] = React.useState({
+      username:'',
+      jobtitle:'',
+      location:'',
+      email:'',
+      mob:'',
+      git:'',
+      linkedin:'',
+      portfolio:'',
+      course:'',
+      college:'',
+      university:'',
+      passout:'',
+      intern:'',
+      companyname:'',
+      companylocation:'',
+      duration:'',
+      userskill:[],
+      summary:''
+    })
   return (
     <div className='container'>
       <div className="row p-5">
         <div className="col-lg-6">
-          <UserInputs/>
+          <UserInputs resumeDetails={resumeDetails} setResumeDetails={setResumeDetails}/>
         </div>
         <div className="col-lg-6">
-          <Preview/>
+          { 
+          resumeDetails.username &&
+          <Preview resumeDetails={resumeDetails}/>
+          }
         </div>
       </div>
     </div>
